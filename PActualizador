@@ -1,0 +1,11 @@
+[ComboBox1]
+Terminal=Adm_Soporte
+Modo=Remoto
+Rutas=D:\Easy System S2010\
+Iniciado?=SI
+Ruta_Winrar=C:\Archivos de programa\WinRAR\
+Ruta_Act=D:\Actualizaciones\*.*
+Num_Act=29
+Hora_Mod=09/10/2012
+[Form]
+InitMax=0

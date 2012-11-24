@@ -1105,147 +1105,46 @@ object FActualizador: TFActualizador
     Font.Style = []
     ParentFont = False
   end
-  object Gauge1: TGauge
-    Left = 0
-    Top = 40
-    Width = 593
-    Height = 28
-    Color = 16744448
-    ForeColor = 16744448
-    ParentColor = False
-    Progress = 0
-  end
   object Label2: TLabel
     Left = 0
     Top = 72
     Width = 3
     Height = 13
   end
-  object CbTerminal: TComboBox
+  object Gauge1: TGauge
     Left = 0
-    Top = 88
-    Width = 121
-    Height = 21
-    ItemHeight = 13
-    Sorted = True
-    TabOrder = 0
-    Text = 'Terminal'
-    Items.Strings = (
-      'Adm_8'
-      'Adm_Alta'
-      'Adm_Gleny'
-      'Adm_Miguelito'
-      'Adm_Raquel'
-      'Adm_Roberto'
-      'Adm_Rossy'
-      'Adm_Soporte'
-      'Alcarrizos'
-      'Almacen'
-      'Boca_Chica'
-      'Cambita'
-      'Electromuebles'
-      'Elias_Pi'#241'a'
-      'Extra_1'
-      'Extra_2'
-      'Extra_3'
-      'Haina_1'
-      'Haina_2'
-      'Haina_3'
-      'Hato_Nuevo'
-      'Independencia'
-      'Km_22'
-      'Km_25'
-      'La_Pared'
-      'Las_Americas'
-      'Las_Palmas'
-      'Los_Frailes'
-      'Nigua_1'
-      'Nigua_2'
-      'Nizao'
-      'Palenque'
-      'Pantoja'
-      'Quita_Sue'#241'o'
-      'San_Cristobal'
-      'San_Vicente'
-      'Villa_Mella')
-  end
-  object CbModo: TComboBox
-    Left = 120
-    Top = 88
-    Width = 81
-    Height = 21
-    ItemHeight = 13
-    TabOrder = 1
-    Text = 'Modo'
-    Items.Strings = (
-      'Local'
-      'Remoto')
+    Top = 40
+    Width = 601
+    Height = 28
+    ForeColor = 16744448
+    Progress = 0
   end
   object BitBtn2: TBitBtn
-    Left = 208
-    Top = 112
-    Width = 75
+    Left = 192
+    Top = 120
+    Width = 209
     Height = 25
-    Caption = 'Configurar'
-    TabOrder = 2
+    Caption = 'Subir archivos al servidor.'
+    TabOrder = 0
     OnClick = BitBtn2Click
   end
-  object CbRutaES: TComboBox
-    Left = 200
-    Top = 88
-    Width = 97
-    Height = 21
-    ItemHeight = 13
-    TabOrder = 3
-    Text = 'Ruta ES'
-    Items.Strings = (
-      'C:\Easy System S2010\'
-      'D:\Easy System S2010\'
-      'E:\Easy System S2010\'
-      'F:\Easy System S2010\'
-      'G:\Easy System S2010\')
-  end
-  object CbRutaApp: TComboBox
-    Left = 296
-    Top = 88
-    Width = 137
-    Height = 21
-    ItemHeight = 13
-    TabOrder = 4
-    Text = 'Ruta Dir App'
-    Items.Strings = (
-      'C:\Archivos de programa\WinRAR\'
-      'C:\Program Files\WinRAR\')
-  end
-  object CbRuta_Act: TComboBox
+  object ProgressBar1: TProgressBar
     Left = 0
-    Top = 104
-    Width = 121
-    Height = 21
-    ItemHeight = 13
-    TabOrder = 5
-    Text = 'Ruta Act'
-    Items.Strings = (
-      'C:\Actualizaciones\*.*'
-      'D:\Actualizaciones\*.*'
-      'E:\Actualizaciones\*.*'
-      'F:\Actualizaciones\*.*'
-      'G:\Actualizaciones\*.*')
+    Top = 88
+    Width = 601
+    Height = 17
+    Step = 0
+    TabOrder = 1
   end
-  object CbLetraDisco: TComboBox
-    Left = 120
-    Top = 104
-    Width = 81
-    Height = 21
-    ItemHeight = 13
-    TabOrder = 6
-    Text = 'Letra Disco'
-    Items.Strings = (
-      'C:'
-      'D:'
-      'E:'
-      'F:'
-      'G:')
+  object BitBtn1: TBitBtn
+    Left = 192
+    Top = 152
+    Width = 209
+    Height = 25
+    Caption = 'Informar de Nueva Actualizacion.'
+    Enabled = False
+    TabOrder = 2
+    OnClick = BitBtn1Click
   end
   object SQLConnection1: TSQLConnection
     ConnectionName = 'IBConnection'

@@ -1,9 +1,11 @@
 program Easy_Actualizador;
 
 uses
-  Forms, windows,
+  Forms,
+  windows,
   UActualizador in 'UActualizador.pas' {FActualizador},
-  UNuevaAct in 'UNuevaAct.pas' {FNuevaAct};
+  UNuevaAct in 'UNuevaAct.pas' {FNuevaAct},
+  UListar in '..\UListar.pas' {Form1};
 
 {$R *.res}
 
@@ -20,9 +22,9 @@ begin
  else
   begin
    Application.Initialize;
-   Application.Title := 'ES Actualizador v1.1';
-   Application.CreateForm(TFActualizador, FActualizador);
-   Application.Run;
+   Application.Title := 'ES Actualizador Servidor';
+  Application.CreateForm(TFActualizador, FActualizador);
+  Application.Run;
     if Mutex <> 0 then
     closeHandle(Mutex);
   end;

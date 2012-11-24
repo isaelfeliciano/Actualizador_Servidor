@@ -130,3 +130,5 @@ OriginalFilename=
 ProductName=
 ProductVersion=1.0.0.0
 Comments=
+[Excluded Packages]
+c:\archivos de programa\borland\delphi7\Bin\dclite70.bpl=Borland Integrated Translation Environment

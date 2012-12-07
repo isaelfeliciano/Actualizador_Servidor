@@ -8,7 +8,7 @@ uses
   IdIcmpClient, StdCtrls, DB, DBClient, SimpleDS, SqlExpr, Gauges, Buttons,
   Menus, IniFiles, Grids, DBGrids, ComCtrls, ShellApi, Registry, ExtCtrls,
   TrayIcon, jpeg, ShellCtrls, SHChangeNotify, IdTCPConnection, IdTCPClient,
-  IdFTP, FileCtrl;
+  IdFTP, FileCtrl, ImgList;
 
 type
   TFActualizador = class(TForm)
@@ -73,6 +73,13 @@ type
     Gauge1: TGauge;
     ProgressBar1: TProgressBar;
     BitBtn1: TBitBtn;
+    Azul_1: TImage;
+    ImageList1: TImageList;
+    Azul_claro_1: TImage;
+    Azul_2: TImage;
+    Azul_claro_2: TImage;
+    Gris_2: TImage;
+    Gris_1: TImage;
     
       
     procedure BitBtn1Click(Sender: TObject);
@@ -99,6 +106,16 @@ type
     procedure Timer5Timer(Sender: TObject);
     procedure IdFTP1Work(Sender: TObject; AWorkMode: TWorkMode;
       const AWorkCount: Integer);
+    procedure Azul_1Click(Sender: TObject);
+    procedure Azul_1MouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure Azul_2MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure Azul_2MouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure Azul_1MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure Azul_2Click(Sender: TObject);
 
 
   private
@@ -108,10 +125,6 @@ type
 
   public
   Ruta: String;
-
-
-
-
   end;
 
 var
@@ -202,7 +215,9 @@ procedure TFActualizador.BitBtn1Click(Sender: TObject);
 
 begin
 sql:= 'UPDATE ACTUALIZADOR s SET s.upgrade = s.upgrade + 1';
-    SQLConnection1.Execute(sql, nil, nil)
+    SQLConnection1.Execute(sql, nil, nil);
+   Label1.Caption:= 'Listo para subir archivos al servidor.';
+   Update;
 end;
 
 
@@ -213,6 +228,9 @@ var
 Tam, Tam2, Tam3, FHandle, BytesEnviados, P, Barra: Integer;
 Directorio: TStringList;
 begin
+  Gauge1.Visible:= True;
+  ProgressBar1.Visible:= True;
+  Gauge1.ForeColor:=$00FF8000;
   BitBtn2.Enabled:= False;
   Tam:= 0;
   Directorio := TStringList.Create;
@@ -244,7 +262,7 @@ begin
     Tam := Tam + Getfilesize(FHandle,nil);
     FileClose(FHandle);
   end;
-  FTP.ChangeDir( '/Prueba/' );
+  FTP.ChangeDir( '/Actualizaciones/' );
   //Afiles:= TStringList.Create;
   //Afiles.Add(AFiles, 'D:Actualizaciones\Easy*.rar', False);
   Gauge1.MinValue:= 0;
@@ -266,7 +284,7 @@ begin
         Label1.Caption:= 'Total';
         Update;
         FTP.BeginWork(wmWrite);
-        FTP.Put( Ruta+Directorio[i], Directorio[i], False);
+        FTP.Put( 'D:\Archivos Rars\'+Directorio[i], Directorio[i], False);
         FTP.EndWork(wmWrite);
         Tam3:= Tam3 + Tam2;
         Gauge1.Progress:=  Tam3;
@@ -274,22 +292,36 @@ begin
         //Gauge1.Progress:= Gauge1.Progress + 10;
         //Sleep(500);
         Except
-        raise Exception.Create( 'No se ha podido iniciar la descarga. ');
+        raise Exception.Create( 'No se ha podido iniciar la Subida. ');
 
     {BytesEnviados := ProgressBar1.Position;
                          If BytesEnviados < Tam then
                             ShowMessage('El Archivo no pudo ser Enviado')
                          Else
                              ShowMessage('El Archivo fue Enviado');}
-
+      //$00FF8000 azul
+      //$0000FF20 verde
       end;
  end;
   BitBtn2.Enabled:= True;
   BitBtn1.Enabled:= True;
+  Gauge1.ForeColor:=$0000FF20;
+  Label1.Caption:=  'Se ha completada la subida de los archivos.';
+  Update;
+  Sleep(3000);
+  Label1.Caption:=  'Upload completada, deberia subir # actualizacion.';
+  Label2.Caption:=  '';
+  Sleep(3000);
+  Gauge1.Visible:=  False;
+  Gauge1.Progress:= 0;
+  ProgressBar1.Visible:= False;
  //ShowMessage('Terminado'+IntToStr(BarraProgreso));
  //FTP.EndWork(wmWrite);
  FTP.Disconnect;
  FTP.Free;
+ Azul_2.Visible:=True;
+ Gris_2.Visible:=False;
+ Update;
  if Gauge1.Progress =  Gauge1.MaxValue then begin
 
  //sql:= 'UPDATE ACTUALIZADOR s SET s.upgrade = s.upgrade + 1';
@@ -302,6 +334,11 @@ begin
 
 procedure TFActualizador.FormCreate(Sender: TObject);
 begin
+Azul_2.Visible:= false;
+Azul_claro_2.Visible:= false;
+Gauge1.Visible:=  False;
+ProgressBar1.Visible:= False;
+Label1.Caption:=  'Listo para subir archivos al servidor.';
 Work_Count:=0;
 FActualizador.Top:= Screen.WorkAreaHeight -187;
 FActualizador.Left:= Screen.WorkAreaWidth -597;
@@ -500,7 +537,58 @@ begin
  //update;
 // Gauge1.Progress :=  BarraProgreso;
   ProgressBar1.Position:= AWorkCount;
-  
+
+end;
+
+procedure TFActualizador.Azul_1Click(Sender: TObject);
+begin
+Azul_1.Visible:= False;
+Azul_claro_1.Visible:= True;
+BitBtn2.Click;
+Update;
+end;
+
+procedure TFActualizador.Azul_1MouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+Azul_1.Visible:= False;
+Azul_claro_1.Visible:= False;
+Gris_1.Visible:= True;
+Update;
+end;
+
+procedure TFActualizador.Azul_2MouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+Azul_2.Visible:= False;
+Azul_claro_2.Visible:= True;
+Update;
+end;
+
+procedure TFActualizador.Azul_2MouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+Azul_2.Visible:= True;
+Azul_claro_2.Visible:= False;
+Update;
+end;
+
+procedure TFActualizador.Azul_1MouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+Azul_1.Visible:= False;
+Azul_claro_1.Visible:= True;
+Update;
+end;
+
+procedure TFActualizador.Azul_2Click(Sender: TObject);
+begin
+Azul_1.Visible:= True;
+Gris_1.Visible:=False;
+sleep(1000);
+Azul_2.Visible:=False;
+Gris_2.Visible:=True;
+BitBtn1.Click;
 end;
 
 end.

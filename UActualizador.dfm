@@ -3395,7 +3395,7 @@ object FActualizador: TFActualizador
     LoginPrompt = False
     Params.Strings = (
       'DriverName=Interbase'
-      'Database='
+      'Database=10.0.0.15:D:\Easy System News\DATA.FDB'
       'RoleName=RoleName'
       'User_Name=SYSDBA'
       'Password=juan173mateo69'
@@ -3410,6 +3410,7 @@ object FActualizador: TFActualizador
       'Trim Char=True')
     VendorLib = 'gds32.dll'
     BeforeConnect = SQLConnection1BeforeConnect
+    Connected = True
     Left = 392
     Top = 8
   end
@@ -3614,6 +3615,31 @@ object FActualizador: TFActualizador
         Name = 'VILLA_MELLA'
         Attributes = [faRequired]
         DataType = ftSmallint
+      end
+      item
+        Name = 'USUARIO'
+        DataType = ftString
+        Size = 30
+      end
+      item
+        Name = 'CLAVE'
+        DataType = ftString
+        Size = 20
+      end
+      item
+        Name = 'SERVIDOR'
+        DataType = ftString
+        Size = 40
+      end
+      item
+        Name = 'SERVIDOR_ALT'
+        DataType = ftString
+        Size = 50
+      end
+      item
+        Name = 'RUTA_ACTUALIZACIONES'
+        DataType = ftString
+        Size = 50
       end>
     IndexDefs = <
       item
@@ -3778,6 +3804,25 @@ object FActualizador: TFActualizador
     object SimpleDataSet1VILLA_MELLA: TSmallintField
       FieldName = 'VILLA_MELLA'
       Required = True
+    end
+    object SimpleDataSet1USUARIO: TStringField
+      FieldName = 'USUARIO'
+      Size = 30
+    end
+    object SimpleDataSet1CLAVE: TStringField
+      FieldName = 'CLAVE'
+    end
+    object SimpleDataSet1SERVIDOR: TStringField
+      FieldName = 'SERVIDOR'
+      Size = 40
+    end
+    object SimpleDataSet1SERVIDOR_ALT: TStringField
+      FieldName = 'SERVIDOR_ALT'
+      Size = 50
+    end
+    object SimpleDataSet1RUTA_ACTUALIZACIONES: TStringField
+      FieldName = 'RUTA_ACTUALIZACIONES'
+      Size = 50
     end
   end
   object IdIcmpClient1: TIdIcmpClient

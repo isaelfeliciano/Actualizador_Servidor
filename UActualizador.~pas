@@ -148,64 +148,61 @@ uses UnuevaAct, UListar;
 
 function ExisteArchivo(Ruta:string):boolean;
 begin
-      if (FileExists(Ruta)) then
-      begin
-         //Existe
-        Result:=true;
-      end
-     else
-     begin
-        //No Existe
-        Result:=false;
-     end;
+  if (FileExists(Ruta)) then
+  begin
+    //Existe
+    Result:=true;
+  end
+  else
+  begin
+    //No Existe
+    Result:=false;
+  end;
 end;
 /////////////////////////////INICIAR CON WINDOWS: INICIO
 procedure TFActualizador.PonerProgramaInicio;
 var Registro: TRegistry;
 begin
-
   Registro := TRegistry.Create;
   Registro.RootKey := HKEY_LOCAL_MACHINE;
-
   if Registro.OpenKey( 'Software\Microsoft\Windows\CurrentVersion\Run', FALSE ) then
   begin
     try
-    Registro.WriteString( ExtractFileName( Application.ExeName ), Application.ExeName );
-    Registro.CloseKey;
-    except
-       MessageDlg('No se pudo config. el auto-inicio, de la utilidad de actualizacion automatica de Easy System', mtWarning, [mbOK], 0);
-  end;
+      Registro.WriteString( ExtractFileName( Application.ExeName ), Application.ExeName );
+      Registro.CloseKey;
+      except
+      MessageDlg('No se pudo config. el auto-inicio, de la utilidad de actualizacion automatica de Easy System', mtWarning, [mbOK], 0);
+    end;
 
-  Registro.Free;
+    Registro.Free;
   end;
-  end;
+end;
 /////////////////////////////INICIAR CON WINDOWS: FIN
 
 /////////////////////////////PROBANDO CONEXION: INICIO
 Procedure TFActualizador.Probar_Conexion;
 begin
-if Modo = 'Local' then
-    IpServidor:= '10.0.0.15';
+ if Modo = 'Local' then
+  IpServidor:= '10.0.0.15';
 
-    if Modo = 'Remoto' then
-    IpServidor:= '25.108.175.106';
+ if Modo = 'Remoto' then
+  IpServidor:= '25.108.175.106';
 
-IdIcmpClient1.Host:= IpServidor;
-IdIcmpClient1.Ping;
+ IdIcmpClient1.Host:= IpServidor;
+ IdIcmpClient1.Ping;
 
-if IdIcmpClient1.ReplyStatus.BytesReceived = 0 then
+ if IdIcmpClient1.ReplyStatus.BytesReceived = 0 then
     begin
       Label1.Caption:= 'No Conectado';
-      
-    end else begin
+    end 
+    else 
+    begin
       Label1.Caption:= 'Conectado '+ IpServidor;
       SQLConnection1.Open;
       SimpleDataSet1.Open;
       Num2:= SimpleDataSet1UPGRADE.AsInteger;
-      SimpleDataSet1.Close;
-
-      
-      end;
+      SimpleDataSet1.Close; 
+    end;
 
 end;
 ///////////////////////////////PROBANDO CONEXION: FIN
@@ -214,10 +211,10 @@ end;
 procedure TFActualizador.BitBtn1Click(Sender: TObject);
 
 begin
-sql:= 'UPDATE ACTUALIZADOR s SET s.upgrade = s.upgrade + 1';
-    SQLConnection1.Execute(sql, nil, nil);
-   Label1.Caption:= 'Listo para subir archivos al servidor.';
-   Update;
+ sql:= 'UPDATE ACTUALIZADOR s SET s.upgrade = s.upgrade + 1';
+ SQLConnection1.Execute(sql, nil, nil);
+ Label1.Caption:= 'Listo para subir archivos al servidor.';
+ Update;
 end;
 
 
@@ -262,7 +259,7 @@ begin
     Tam := Tam + Getfilesize(FHandle,nil);
     FileClose(FHandle);
   end;
-  FTP.ChangeDir( '/Actualizaciones/' );
+  FTP.ChangeDir( '/Archivos Rars/' );
   //Afiles:= TStringList.Create;
   //Afiles.Add(AFiles, 'D:Actualizaciones\Easy*.rar', False);
   Gauge1.MinValue:= 0;
@@ -271,50 +268,50 @@ begin
 
   Gauge1.Progress:= 0;
   for i := 0 to Directorio.Count -1 do
-    begin
-      try
-        //FTP.TransferType := ftBinary;
-        ArcEnProc:=  Directorio[i];
-        FHandle := FileOpen('D:\Archivos Rars\'+Directorio[i], 0);
-        Tam2 :=  Getfilesize(FHandle,nil);
-        FileClose(FHandle);
-        ProgressBar1.Min:= 0;
-        ProgressBar1.Max:= Tam2;
-        Label2.Caption:= 'Subiendo: ' + ArcEnProc + ' / Tamaño del archivo: ' + IntToStr(Tam2 div 1024)+ ' Kb';
-        Label1.Caption:= 'Total';
-        Update;
-        FTP.BeginWork(wmWrite);
-        FTP.Put( 'D:\Archivos Rars\'+Directorio[i], Directorio[i], False);
-        FTP.EndWork(wmWrite);
-        Tam3:= Tam3 + Tam2;
-        Gauge1.Progress:=  Tam3;
-        //ShowMessage(IntToStr(Gauge1.Progress));
-        //Gauge1.Progress:= Gauge1.Progress + 10;
-        //Sleep(500);
-        Except
-        raise Exception.Create( 'No se ha podido iniciar la Subida. ');
+  begin
+    try
+      //FTP.TransferType := ftBinary;
+      ArcEnProc:=  Directorio[i];
+      FHandle := FileOpen('D:\Archivos Rars\'+Directorio[i], 0);
+      Tam2 :=  Getfilesize(FHandle,nil);
+      FileClose(FHandle);
+      ProgressBar1.Min:= 0;
+      ProgressBar1.Max:= Tam2;
+      Label2.Caption:= 'Subiendo: ' + ArcEnProc + ' / Tamaño: ' + IntToStr(Tam2 div 1024)+ ' Kb';
+      Label1.Caption:= 'Total';
+      Update;
+      FTP.BeginWork(wmWrite);
+      FTP.Put( 'D:\Archivos Rars\'+Directorio[i], Directorio[i], False);
+      FTP.EndWork(wmWrite);
+      Tam3:= Tam3 + Tam2;
+      Gauge1.Progress:=  Tam3;
+      //ShowMessage(IntToStr(Gauge1.Progress));
+      //Gauge1.Progress:= Gauge1.Progress + 10;
+      //Sleep(500);
+      Except
+      raise Exception.Create( 'No se ha podido iniciar la Subida. ');
 
-    {BytesEnviados := ProgressBar1.Position;
-                         If BytesEnviados < Tam then
-                            ShowMessage('El Archivo no pudo ser Enviado')
-                         Else
-                             ShowMessage('El Archivo fue Enviado');}
+      {BytesEnviados := ProgressBar1.Position;
+      If BytesEnviados < Tam then
+      ShowMessage('El Archivo no pudo ser Enviado')
+      Else
+      ShowMessage('El Archivo fue Enviado');}
       //$00FF8000 azul
       //$0000FF20 verde
-      end;
+    end;
  end;
-  BitBtn2.Enabled:= True;
-  BitBtn1.Enabled:= True;
-  Gauge1.ForeColor:=$0000FF20;
-  Label1.Caption:=  'Se ha completada la subida de los archivos.';
-  Update;
-  Sleep(3000);
-  Label1.Caption:=  'Upload completada, deberia subir # actualizacion.';
-  Label2.Caption:=  '';
-  Sleep(3000);
-  Gauge1.Visible:=  False;
-  Gauge1.Progress:= 0;
-  ProgressBar1.Visible:= False;
+ BitBtn2.Enabled:= True;
+ BitBtn1.Enabled:= True;
+ Gauge1.ForeColor:=$0000FF20;
+ Label1.Caption:=  'Se ha completada la subida de los archivos.';
+ Update;
+ Sleep(3000);
+ Label1.Caption:=  'Upload completada, deberia subir # actualizacion.';
+ Label2.Caption:=  '';
+ Sleep(3000);
+ Gauge1.Visible:=  False;
+ Gauge1.Progress:= 0;
+ ProgressBar1.Visible:= False;
  //ShowMessage('Terminado'+IntToStr(BarraProgreso));
  //FTP.EndWork(wmWrite);
  FTP.Disconnect;
@@ -322,45 +319,45 @@ begin
  Azul_2.Visible:=True;
  Gris_2.Visible:=False;
  Update;
- if Gauge1.Progress =  Gauge1.MaxValue then begin
-
- //sql:= 'UPDATE ACTUALIZADOR s SET s.upgrade = s.upgrade + 1';
-    //SQLConnection1.Execute(sql, nil, nil)
-    end;
-    end;
+ if Gauge1.Progress =  Gauge1.MaxValue then 
+ begin
+   //sql:= 'UPDATE ACTUALIZADOR s SET s.upgrade = s.upgrade + 1';
+   //SQLConnection1.Execute(sql, nil, nil)
+  end;
+end;
 
 
 
 
 procedure TFActualizador.FormCreate(Sender: TObject);
 begin
-Azul_2.Visible:= false;
-Azul_claro_2.Visible:= false;
-Gauge1.Visible:=  False;
-ProgressBar1.Visible:= False;
-Label1.Caption:=  'Listo para subir archivos al servidor.';
-Work_Count:=0;
-FActualizador.Top:= Screen.WorkAreaHeight -187;
-FActualizador.Left:= Screen.WorkAreaWidth -597;
-TrayIcon1.Show;
-Timer1.Enabled:= True;
-SQLConnection1.Close;
-SimpleDataSet1.Connection:= SQLConnection1;
-Cad3:='ADM_SOPORTE';
-Ini2 := TIniFile.Create( ChangeFileExt( Application.ExeName, '.INI' ) );
+ Azul_2.Visible:= false;
+ Azul_claro_2.Visible:= false;
+ Gauge1.Visible:=  False;
+ ProgressBar1.Visible:= False;
+ Label1.Caption:=  'Listo para subir archivos al servidor.';
+ Work_Count:=0;
+ FActualizador.Top:= Screen.WorkAreaHeight -187;
+ FActualizador.Left:= Screen.WorkAreaWidth -597;
+ TrayIcon1.Show;
+ Timer1.Enabled:= True;
+ SQLConnection1.Close;
+ SimpleDataSet1.Connection:= SQLConnection1;
+ Cad3:='ADM_SOPORTE';
+ Ini2 := TIniFile.Create( ChangeFileExt( Application.ExeName, '.INI' ) );
 
-    Configurado:= Ini2.ReadString( 'ComboBox1', 'Iniciado?', '' );
-    Terminal:=    Ini2.ReadString( 'ComboBox1', 'Terminal', '' );
-    Modo:=        Ini2.ReadString( 'ComboBox1', 'Modo', '' );
-    Num1:=StrToInt(Ini2.ReadString('ComboBox1', 'Num_Act', ''));
-    Ruta:=        Ini2.ReadString( 'ComboBox1', 'Rutas', '' );
-    Ruta_Winrar:=Ini2.ReadString(  'ComboBox1', 'Ruta_Winrar', '' );
-    Ruta_Act:=   Ini2.ReadString(  'ComboBox1', 'Ruta_Act', '' );
-    LetraDisco:= Ini2.ReadString(  'ComboBox1', 'LetraDisco', '' );
+  Configurado:= Ini2.ReadString( 'ComboBox1', 'Iniciado?', '' );
+  Terminal:=    Ini2.ReadString( 'ComboBox1', 'Terminal', '' );
+  Modo:=        Ini2.ReadString( 'ComboBox1', 'Modo', '' );
+  Num1:=StrToInt(Ini2.ReadString('ComboBox1', 'Num_Act', ''));
+  Ruta:=        Ini2.ReadString( 'ComboBox1', 'Rutas', '' );
+  Ruta_Winrar:=Ini2.ReadString(  'ComboBox1', 'Ruta_Winrar', '' );
+  Ruta_Act:=   Ini2.ReadString(  'ComboBox1', 'Ruta_Act', '' );
+  LetraDisco:= Ini2.ReadString(  'ComboBox1', 'LetraDisco', '' );
 
 
-   Timer2.Enabled:= True;
-   Timer5.Enabled:= True;
+  Timer2.Enabled:= True;
+  Timer5.Enabled:= True;
 
 end;
 
@@ -368,37 +365,33 @@ end;
 procedure TFActualizador.BitBtn3Click(Sender: TObject);
 var lpFileOp: TSHFileOpStruct;
 begin
-Probar_Conexion;
-
+ Probar_Conexion;
  if Num1 < Num2 then
  begin
- //ShowMessage('Iniciando');
+   //ShowMessage('Iniciando');
+   begin
 
-begin
+     { Relleno de la estructura }
+     {lpFileOp.Wnd := Self.Handle;
+     lpFileOp.wFunc := FO_COPY;
+     lpFileOp.pFrom := PChar('D:\Actualizaciones\*.*' + #0#0);
+     lpFileOp.pTo := PChar('D:\Easy System S2010' + #0#0);
+     lpFileOp.fFlags:= FOF_SIMPLEPROGRESS or FOF_FILESONLY;
+     lpFileOp.fAnyOperationsAborted := FALSE;
+     lpFileOp.hNameMappings := nil;
+     lpFileOp.lpszProgressTitle := PChar('Trasladando archivos al disco D' + #0#0);
+     ProgressBar1.Position:= 50;
 
-    { Relleno de la estructura }
-    {lpFileOp.Wnd := Self.Handle;
-    lpFileOp.wFunc := FO_COPY;
-    lpFileOp.pFrom := PChar('D:\Actualizaciones\*.*' + #0#0);
-    lpFileOp.pTo := PChar('D:\Easy System S2010' + #0#0);
-    lpFileOp.fFlags:= FOF_SIMPLEPROGRESS or FOF_FILESONLY;
-    lpFileOp.fAnyOperationsAborted := FALSE;
-    lpFileOp.hNameMappings := nil;
-    lpFileOp.lpszProgressTitle := PChar('Trasladando archivos al disco D' + #0#0);
-    ProgressBar1.Position:= 50;
-
-    { Mover el archivo }
-    //SHFileOperation(lpFileOp);
-
- //origen:= 'D:\Actualizaciones\*.*';
- //destino:= 'D:\Easy System S2010';
-
-end;
-end;
+     { Mover el archivo }
+     //SHFileOperation(lpFileOp);
+     //origen:= 'D:\Actualizaciones\*.*';
+     //destino:= 'D:\Easy System S2010';
+   end;
+ end;
 end;
 procedure TFActualizador.BitBtn4Click(Sender: TObject);
 begin
-//
+ //
 end;
 
 
@@ -410,123 +403,122 @@ begin
   begin
     if LoginPrompt = False then
     begin
-      if Modo = 'Local' then begin
-      IpServidor:= '10.0.0.15';
-      SQLConnection1.Params.Values['Database']:= '10.0.0.15:D:\Easy System News\DATA.FDB';
+      if Modo = 'Local' then 
+      begin
+       IpServidor:= '10.0.0.15';
+       SQLConnection1.Params.Values['Database']:= '10.0.0.15:D:\Easy System News\DATA.FDB';
       end;
-        if Modo = 'Remoto' then begin
-        IpServidor:= '25.108.175.106';
-        SQLConnection1.Params.Values['Database']:= '25.108.175.106:D:\Easy System News\DATA.FDB';
-        end;
-    end;
+     if Modo = 'Remoto' then 
+     begin
+      IpServidor:= '25.108.175.106';
+      SQLConnection1.Params.Values['Database']:= '25.108.175.106:D:\Easy System News\DATA.FDB';
+     end;
+   end;
   end;
 end;
 procedure TFActualizador.Timer1Timer(Sender: TObject);
 begin
-Probar_Conexion;
+ Probar_Conexion;
 end;
 
 procedure TFActualizador.ActualizarAhora1Click(Sender: TObject);
 begin
-Label2.Caption:= 'Descargando archivos.';  
-FActualizador.Top:= Screen.WorkAreaHeight -187;
-FActualizador.Left:= Screen.WorkAreaWidth -597;
-
+ Label2.Caption:= 'Descargando archivos.';  
+ FActualizador.Top:= Screen.WorkAreaHeight -187;
+ FActualizador.Left:= Screen.WorkAreaWidth -597;
 end;
 
 procedure TFActualizador.CerrarActualizador1Click(Sender: TObject);
 begin
-FActualizador.Close;
+ FActualizador.Close;
 end;
 
 procedure TFActualizador.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-TrayIcon1.Hide;
-
-Action:= Cafree;
+ TrayIcon1.Hide;
+ Action:= Cafree;
 end;
 
 
 procedure TFActualizador.Timer2Timer(Sender: TObject);
 begin
-FActualizador.Top:= Screen.WorkAreaHeight +187;
-FActualizador.Left:= Screen.WorkAreaWidth +597;
-Timer2.Enabled:= False;
+ FActualizador.Top:= Screen.WorkAreaHeight +187;
+ FActualizador.Left:= Screen.WorkAreaWidth +597;
+ Timer2.Enabled:= False;
 end;
 
 procedure TFActualizador.MostrarActualizador1Click(Sender: TObject);
 begin
-FActualizador.Top:= Screen.WorkAreaHeight -187;
-FActualizador.Left:= Screen.WorkAreaWidth -597;
+ FActualizador.Top:= Screen.WorkAreaHeight -187;
+ FActualizador.Left:= Screen.WorkAreaWidth -597;
 end;
 
 procedure TFActualizador.ShellChangeNotifier1Change;
 begin
-//Timer3.Enabled:= True;
-//ShowMessage('Modificado');
+ //Timer3.Enabled:= True;
+ //ShowMessage('Modificado');
 end;
 
 Procedure TFActualizador.AutoAct;
 var lpFileOp: TSHFileOpStruct; Ruta_AutoAct: String;
 begin
-//Timer3.Enabled:= False;
-Ruta_AutoAct:= Ruta+'Actualizador\*.*';
-    lpFileOp.Wnd := Self.Handle;
-    lpFileOp.wFunc := FO_COPY;
-    lpFileOp.pFrom := PChar(Ruta_AutoAct + #0#0);
-    lpFileOp.pTo := PChar(Ruta + #0#0);
-    lpFileOp.fFlags:= FOF_SIMPLEPROGRESS or FOF_FILESONLY or FOF_NOCONFIRMATION;
-    lpFileOp.fAnyOperationsAborted := FALSE;
-    lpFileOp.hNameMappings := nil;
-    lpFileOp.lpszProgressTitle := PChar('Trasladando archivos al disco D' + #0#0);
-    FActualizador.Close;
+ //Timer3.Enabled:= False;
+  Ruta_AutoAct:= Ruta+'Actualizador\*.*';
+  lpFileOp.Wnd := Self.Handle;
+  lpFileOp.wFunc := FO_COPY;
+  lpFileOp.pFrom := PChar(Ruta_AutoAct + #0#0);
+  lpFileOp.pTo := PChar(Ruta + #0#0);
+  lpFileOp.fFlags:= FOF_SIMPLEPROGRESS or FOF_FILESONLY or FOF_NOCONFIRMATION;
+  lpFileOp.fAnyOperationsAborted := FALSE;
+  lpFileOp.hNameMappings := nil;
+  lpFileOp.lpszProgressTitle := PChar('Trasladando archivos al disco D' + #0#0);
+  FActualizador.Close;
 
-    { Mover el archivo }
-    SHFileOperation(lpFileOp);
+  { Mover el archivo }
+  SHFileOperation(lpFileOp);
 end;
 
 procedure TFActualizador.Timer3Timer(Sender: TObject);
 begin
-AutoAct;
+ AutoAct;
 end;
 
 procedure TFActualizador.FormShow(Sender: TObject);
 begin
-ShowWindow(application.Handle, SW_HIDE)
+ ShowWindow(application.Handle, SW_HIDE)
 end;
 
 procedure TFActualizador.OcultarActualizador1Click(Sender: TObject);
 begin
-FActualizador.Top:= Screen.WorkAreaHeight +187;
-FActualizador.Left:= Screen.WorkAreaWidth +597;
+ FActualizador.Top:= Screen.WorkAreaHeight +187;
+ FActualizador.Left:= Screen.WorkAreaWidth +597;
 end;
 
 procedure TFActualizador.Timer4Timer(Sender: TObject);
 begin
-//
+ //
 end;
 
 procedure TFActualizador.SHChangeNotify1UpdateDir(Sender: TObject; Flags: Cardinal;
   Path1: String);
 begin
-//Update_Dir:= Path1;
-if Path1 = Ruta+'Actualizador' then
-begin
+  //Update_Dir:= Path1;
+  if Path1 = Ruta+'Actualizador' then
+  begin
 
-
-end;
+  end;
 end;
 
 procedure TFActualizador.SHChangeNotify1Delete(Sender: TObject; Flags: Cardinal;
   Path1: String);
 begin
-ShowMessage(Path1);
+  ShowMessage(Path1);
 end;
 
 
 procedure TFActualizador.Timer5Timer(Sender: TObject);
 begin
-//
+  //
 end;
 
 procedure TFActualizador.IdFTP1Work(Sender: TObject; AWorkMode: TWorkMode;
@@ -535,60 +527,60 @@ begin
  BarraProgreso:= BarraProgreso + AWorkCount; //Trunc(AWorkCount / 5.4);
  //ShowMessage(IntToStr(BarraProgreso));
  //update;
-// Gauge1.Progress :=  BarraProgreso;
+  // Gauge1.Progress :=  BarraProgreso;
   ProgressBar1.Position:= AWorkCount;
 
 end;
 
 procedure TFActualizador.Azul_1Click(Sender: TObject);
 begin
-Azul_1.Visible:= False;
-Azul_claro_1.Visible:= True;
-BitBtn2.Click;
-Update;
+  Azul_1.Visible:= False;
+  Azul_claro_1.Visible:= True;
+  BitBtn2.Click;
+  Update;
 end;
 
 procedure TFActualizador.Azul_1MouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-Azul_1.Visible:= False;
-Azul_claro_1.Visible:= False;
-Gris_1.Visible:= True;
-Update;
+  Azul_1.Visible:= False;
+  Azul_claro_1.Visible:= False;
+  Gris_1.Visible:= True;
+  Update;
 end;
 
 procedure TFActualizador.Azul_2MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-Azul_2.Visible:= False;
-Azul_claro_2.Visible:= True;
-Update;
+  Azul_2.Visible:= False;
+  Azul_claro_2.Visible:= True;
+  Update;
 end;
 
 procedure TFActualizador.Azul_2MouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-Azul_2.Visible:= True;
-Azul_claro_2.Visible:= False;
-Update;
+  Azul_2.Visible:= True;
+  Azul_claro_2.Visible:= False;
+  Update;
 end;
 
 procedure TFActualizador.Azul_1MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-Azul_1.Visible:= False;
-Azul_claro_1.Visible:= True;
-Update;
+  Azul_1.Visible:= False;
+  Azul_claro_1.Visible:= True;
+  Update;
 end;
 
 procedure TFActualizador.Azul_2Click(Sender: TObject);
 begin
-Azul_1.Visible:= True;
-Gris_1.Visible:=False;
-sleep(1000);
-Azul_2.Visible:=False;
-Gris_2.Visible:=True;
-BitBtn1.Click;
+  Azul_1.Visible:= True;
+  Gris_1.Visible:=False;
+  sleep(1000);
+  Azul_2.Visible:=False;
+  Gris_2.Visible:=True;
+  BitBtn1.Click;
 end;
 
 end.

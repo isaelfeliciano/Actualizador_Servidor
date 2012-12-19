@@ -80,6 +80,11 @@ type
     Azul_claro_2: TImage;
     Gris_2: TImage;
     Gris_1: TImage;
+    SimpleDataSet1USUARIO: TStringField;
+    SimpleDataSet1CLAVE: TStringField;
+    SimpleDataSet1SERVIDOR: TStringField;
+    SimpleDataSet1SERVIDOR_ALT: TStringField;
+    SimpleDataSet1RUTA_ACTUALIZACIONES: TStringField;
     
       
     procedure BitBtn1Click(Sender: TObject);
@@ -244,9 +249,11 @@ begin
   FTP := TIdFTP.Create( nil );
   FTP.OnWork := IdFTP1Work;
   //FTP.EndWork(wmRead):= IdFTP1WorkEnd
-  FTP.Username := 'isaelfeliciano_zxq';
-  FTP.Password := 'Ri846161636';
-  FTP.Host := 'isaelfeliciano.zxq.net';
+  SimpleDataSet1.Open;
+  FTP.Username := SimpleDataSet1USUARIO.AsString;
+  FTP.Password := SimpleDataSet1CLAVE.AsString;
+  FTP.Host := SimpleDataSet1SERVIDOR.AsString;
+  SimpleDataSet1.Close;
   Barra:= 0;
   try
     FTP.Connect;
@@ -259,7 +266,9 @@ begin
     Tam := Tam + Getfilesize(FHandle,nil);
     FileClose(FHandle);
   end;
-  FTP.ChangeDir( '/Actualizaciones/' );
+  SimpleDataSet1.Open;
+  FTP.ChangeDir( SimpleDataSet1RUTA_ACTUALIZACIONES.AsString );
+  SimpleDataSet1.Close;
   //Afiles:= TStringList.Create;
   //Afiles.Add(AFiles, 'D:Actualizaciones\Easy*.rar', False);
   Gauge1.MinValue:= 0;
@@ -403,7 +412,7 @@ begin
   begin
     if LoginPrompt = False then
     begin
-      if Modo = 'Local' then 
+      if Modo = 'Local' then
       begin
        IpServidor:= '10.0.0.15';
        SQLConnection1.Params.Values['Database']:= '10.0.0.15:D:\Easy System News\DATA.FDB';
